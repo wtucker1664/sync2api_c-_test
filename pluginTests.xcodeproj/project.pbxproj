@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3F560D951AEFC7F900DC27B7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F560D941AEFC7F900DC27B7 /* main.cpp */; };
+		3FDA62B81B0388DA00F1D31D /* libcurl.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FDA62B71B0388DA00F1D31D /* libcurl.4.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,18 @@
 /* Begin PBXFileReference section */
 		3F560D911AEFC7F900DC27B7 /* pluginTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pluginTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F560D941AEFC7F900DC27B7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3FDA62AC1B03868800F1D31D /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = document.h; sourceTree = "<group>"; };
+		3FDA62AD1B03868800F1D31D /* filestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filestream.h; sourceTree = "<group>"; };
+		3FDA62AF1B03868800F1D31D /* pow10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pow10.h; sourceTree = "<group>"; };
+		3FDA62B01B03868800F1D31D /* stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stack.h; sourceTree = "<group>"; };
+		3FDA62B11B03868800F1D31D /* strfunc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = strfunc.h; sourceTree = "<group>"; };
+		3FDA62B21B03868800F1D31D /* prettywriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prettywriter.h; sourceTree = "<group>"; };
+		3FDA62B31B03868800F1D31D /* rapidjson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rapidjson.h; sourceTree = "<group>"; };
+		3FDA62B41B03868800F1D31D /* reader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reader.h; sourceTree = "<group>"; };
+		3FDA62B51B03868800F1D31D /* stringbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringbuffer.h; sourceTree = "<group>"; };
+		3FDA62B61B03868800F1D31D /* writer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = writer.h; sourceTree = "<group>"; };
+		3FDA62B71B0388DA00F1D31D /* libcurl.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurl.4.dylib; path = usr/lib/libcurl.4.dylib; sourceTree = SDKROOT; };
+		3FFB37691B0CE205004C8431 /* LBJSONRenderFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LBJSONRenderFM.h; path = pluginTests/LBJSONRenderFM.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FDA62B81B0388DA00F1D31D /* libcurl.4.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -41,6 +55,8 @@
 		3F560D881AEFC7F900DC27B7 = {
 			isa = PBXGroup;
 			children = (
+				3FFB37691B0CE205004C8431 /* LBJSONRenderFM.h */,
+				3FDA62B71B0388DA00F1D31D /* libcurl.4.dylib */,
 				3F560D931AEFC7F900DC27B7 /* pluginTests */,
 				3F560D921AEFC7F900DC27B7 /* Products */,
 			);
@@ -57,9 +73,35 @@
 		3F560D931AEFC7F900DC27B7 /* pluginTests */ = {
 			isa = PBXGroup;
 			children = (
+				3FDA62AB1B03868800F1D31D /* rapidjson */,
 				3F560D941AEFC7F900DC27B7 /* main.cpp */,
 			);
 			path = pluginTests;
+			sourceTree = "<group>";
+		};
+		3FDA62AB1B03868800F1D31D /* rapidjson */ = {
+			isa = PBXGroup;
+			children = (
+				3FDA62AC1B03868800F1D31D /* document.h */,
+				3FDA62AD1B03868800F1D31D /* filestream.h */,
+				3FDA62AE1B03868800F1D31D /* internal */,
+				3FDA62B21B03868800F1D31D /* prettywriter.h */,
+				3FDA62B31B03868800F1D31D /* rapidjson.h */,
+				3FDA62B41B03868800F1D31D /* reader.h */,
+				3FDA62B51B03868800F1D31D /* stringbuffer.h */,
+				3FDA62B61B03868800F1D31D /* writer.h */,
+			);
+			path = rapidjson;
+			sourceTree = "<group>";
+		};
+		3FDA62AE1B03868800F1D31D /* internal */ = {
+			isa = PBXGroup;
+			children = (
+				3FDA62AF1B03868800F1D31D /* pow10.h */,
+				3FDA62B01B03868800F1D31D /* stack.h */,
+				3FDA62B11B03868800F1D31D /* strfunc.h */,
+			);
+			path = internal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -202,6 +244,16 @@
 		3F560D991AEFC7FA00DC27B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c11;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/opt/boost/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/opt/boost/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -209,6 +261,16 @@
 		3F560D9A1AEFC7FA00DC27B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				GCC_C_LANGUAGE_STANDARD = c11;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/opt/boost/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/opt/boost/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -232,6 +294,7 @@
 				3F560D9A1AEFC7FA00DC27B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
