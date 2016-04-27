@@ -254,6 +254,7 @@
 					/usr/local/opt/boost/include,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/opt/boost/lib;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -271,6 +272,7 @@
 					/usr/local/opt/boost/include,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/opt/boost/lib;
+				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

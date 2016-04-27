@@ -1,29 +1,26 @@
 //
-//  LBJSONRenderFM.h
-//  pluginTests
-//
-//  Created by Warren Tucker on 13/05/2015.
-//  Copyright (c) 2015 Warren Tucker. All rights reserved.
-//
-
-#ifndef LBJSONRenderFM_h
-#define LBJSONRenderFM_h
-
-/*
- * LBJSONRenderFM.hpp
+/*  LBJSONRenderFM.h
+ *  pluginTests
  *
  *  Created on: Jun 18, 2014
  *  Modified on: May 11, 2015
  *      Author: Warren Tucker
  *      Email: warren.tucker@linearblue.com
+ *
+ * Copyright (c) 2015 Warren Tucker. All rights reserved.
  */
+
+#ifndef LBJSONRenderFM_h
+#define LBJSONRenderFM_h
+
+
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
-#include <boost/asio/io_service.hpp>
-#include <boost/asio/write.hpp>
-#include <boost/asio/buffer.hpp>
-#include <boost/asio/ip/tcp.hpp>
+//#include <boost/asio/io_service.hpp>
+//#include <boost/asio/write.hpp>
+//#include <boost/asio/buffer.hpp>
+//#include <boost/asio/ip/tcp.hpp>
 #include <cassert>
 #include <exception>
 #include <sstream>

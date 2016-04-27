@@ -197,13 +197,14 @@ int main(int argc, const char * argv[]) {
 
 #include <ostream>
 
-#include <boost/asio.hpp>
 
-#include <boost/property_tree/json_parser.hpp>
 
-using boost::property_tree::ptree; using boost::property_tree::read_json; using boost::property_tree::write_json;
 
-using boost::asio::ip::tcp;
+//#include <boost/property_tree/json_parser.hpp>
+//
+//using boost::property_tree::ptree; using boost::property_tree::read_json; using boost::property_tree::write_json;
+//
+//using boost::asio::ip::tcp;
 using namespace std;
 std::stringstream data;
 using namespace rapidjson;
@@ -259,41 +260,41 @@ LBJSONRenderFM* getObject(){
 }
 
 int main( int argc, char ** argv ) {
-    boost::asio::io_service io_service;
-    tcp::resolver resolver(io_service);
-    tcp::resolver::query query("https://www.sync2api.com/consumer/", "https");
-    tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-    
-    // Try each endpoint until we successfully establish a connection.
-    tcp::socket socket(io_service);
-    boost::asio::connect(socket, endpoint_iterator);
-    
-    // Form the request. We specify the "Connection: close" header so that the
-    // server will close the socket after transmitting the response. This will
-    // allow us to treat all data up until the EOF as the content.
-    boost::asio::streambuf request;
-    std::ostream request_stream(&request);
-    
-    ptree root;
-    root.put ("sKey", "0b85a3eddf74b32d5b824311537aa4c51e39dff8");
-    root.put ( "scKey", "28cf64e0fc8f5598e51b3585f4769594b87c7f2c");
-    root.put ("method", "twitter");
-    root.put ( "module", "UserTweets");
-    
-    std::ostringstream buf;
-    write_json (buf, root, false);
-    std::string json = buf.str();
-    
-    request_stream << "POST /title/ HTTP/1.1 \r\n";
-    request_stream << "Host:https://www.sync2api.com/consumer/\r\n";
-    request_stream << "User-Agent: C/1.0";
-    request_stream << "Content-Type: application/json; charset=utf-8 \r\n";
-    request_stream << "Accept: */*\r\n";
-    request_stream << "Content-Length: " << json.length() << "\r\n";
-    request_stream << "Connection: close\r\n\r\n";  //NOTE THE Double line feed
-    
-    // Send the request.
-    boost::asio::write(socket, request);
+//    boost::asio::io_service io_service;
+//    tcp::resolver resolver(io_service);
+//    tcp::resolver::query query("https://www.sync2api.com/consumer/", "https");
+//    tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
+//    
+//    // Try each endpoint until we successfully establish a connection.
+//    tcp::socket socket(io_service);
+//    boost::asio::connect(socket, endpoint_iterator);
+//    
+//    // Form the request. We specify the "Connection: close" header so that the
+//    // server will close the socket after transmitting the response. This will
+//    // allow us to treat all data up until the EOF as the content.
+//    boost::asio::streambuf request;
+//    std::ostream request_stream(&request);
+//    
+//    ptree root;
+//    root.put ("sKey", "0b85a3eddf74b32d5b824311537aa4c51e39dff8");
+//    root.put ( "scKey", "28cf64e0fc8f5598e51b3585f4769594b87c7f2c");
+//    root.put ("method", "twitter");
+//    root.put ( "module", "UserTweets");
+//    
+//    std::ostringstream buf;
+//    write_json (buf, root, false);
+//    std::string json = buf.str();
+//    
+//    request_stream << "POST /title/ HTTP/1.1 \r\n";
+//    request_stream << "Host:https://www.sync2api.com/consumer/\r\n";
+//    request_stream << "User-Agent: C/1.0";
+//    request_stream << "Content-Type: application/json; charset=utf-8 \r\n";
+//    request_stream << "Accept: */*\r\n";
+//    request_stream << "Content-Length: " << json.length() << "\r\n";
+//    request_stream << "Connection: close\r\n\r\n";  //NOTE THE Double line feed
+//    
+//    // Send the request.
+//    boost::asio::write(socket, request);
     
 //    CURL *curl;
 //    CURLcode res;
@@ -347,17 +348,26 @@ int main( int argc, char ** argv ) {
     
      //   getObject()->setLicenceKeys("0b85a3eddf74b32d5b824311537aa4c51e39dff8","28cf64e0fc8f5598e51b3585f4769594b87c7f2c");
     // getObject()->setLicenceKeys("37357e63e92692c16d6a387633a985f848f7a6ac","aee8490d80661c10c22da5378edb016b589c14af");
-//    getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf");
+    
+    getObject()->clearRequest();
+    
+    getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf");
 //    
-//        getObject()->setLBDebug(true);
+       getObject()->setLBDebug(true);
 //    getObject()->setModule("twitter");
-//    getObject()->setMethod("SearchTweets");
+//    getObject()->setMethod("userTweets");
+    getObject()->setModule("ebay");
+    getObject()->setMethod("orders");
+    getObject()->setProperty("outputType", "json");
+    getObject()->setProperty("siteId", "3");
     //getObject()->setProperty("count", "20");
 //    getObject()->setProperty("q", "TheTastingHouse");
     
     // Note
    //     getObject()->setProperty("guid", "c0e39e3a-a6e8-4d3f-8a50-6653437a176b");
     
+    getObject()->setProperty("createTimeFrom", "2016-04-01T09:30:00Z");
+    getObject()->setProperty("createTimeTo", "2016-04-22T16:00:00Z");
     // Note book
     
 //    getObject()->setProperty("guid", "9cd1ef2c-a694-444d-adea-10400f536be9");
@@ -384,8 +394,8 @@ int main( int argc, char ** argv ) {
 //    getObject()->setComplexProperty("key");
 //    getObject()->setComplexProperty("gt",1);
     //getObject()->printRequestVars();
-//    getObject()->sendRequest();
-//    getObject()->printRecords();
+    getObject()->sendRequest();
+    getObject()->printRecords();
 //
 //    
 //        string r = jObject->getRecordCount();
