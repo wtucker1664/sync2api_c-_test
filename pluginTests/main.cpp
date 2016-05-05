@@ -351,7 +351,7 @@ int main( int argc, char ** argv ) {
     
     getObject()->clearRequest();
     
-    getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf");
+    getObject()->setLicenceKeys("070a13d979221d85bae59f4b41d1444d00147b9e","87d4801e9eaaf96f7663650de440472d8dca5c91"); // Live account be careful
 //    
        getObject()->setLBDebug(true);
 //    getObject()->setModule("twitter");
@@ -366,8 +366,8 @@ int main( int argc, char ** argv ) {
     // Note
    //     getObject()->setProperty("guid", "c0e39e3a-a6e8-4d3f-8a50-6653437a176b");
     
-    getObject()->setProperty("createTimeFrom", "2016-04-01T09:30:00Z");
-    getObject()->setProperty("createTimeTo", "2016-04-22T16:00:00Z");
+    getObject()->setProperty("createTimeFrom", "2016-05-01T00:00:00Z");
+    getObject()->setProperty("createTimeTo", "2016-05-21T23:59:59Z");
     // Note book
     
 //    getObject()->setProperty("guid", "9cd1ef2c-a694-444d-adea-10400f536be9");

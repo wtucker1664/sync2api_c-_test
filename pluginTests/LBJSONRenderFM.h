@@ -3,9 +3,9 @@
  *  pluginTests
  *
  *  Created on: Jun 18, 2014
- *  Modified on: May 11, 2015
+ *  Modified on: May 11, 2015,May 05 2016
  *      Author: Warren Tucker
- *      Email: warren.tucker@linearblue.com
+ *      Email: wtucker1664@me.com
  *
  * Copyright (c) 2015 Warren Tucker. All rights reserved.
  */
@@ -17,10 +17,6 @@
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
-//#include <boost/asio/io_service.hpp>
-//#include <boost/asio/write.hpp>
-//#include <boost/asio/buffer.hpp>
-//#include <boost/asio/ip/tcp.hpp>
 #include <cassert>
 #include <exception>
 #include <sstream>
@@ -47,134 +43,203 @@ namespace LB{
     class LBJSONRenderFM{
         
     private:
-        
+        string multiItemsParent = "";
+        string multiItemsTestParent = "";
+        vector<string> varString;
+        bool multiItemsDone = false;
+        int currentLevel = 0;
+        string getVarString(){
+            stringstream vString;
+            for(int i=0;i<varString.size();i++){
+                if(i > 0 ){
+                    
+                        vString << "_" << varString[i];
+                   
+                }else{
+                    vString << varString[i];
+                }
+            }
+            
+            return vString.str();
+        }
+        void stepBack(SizeType p){
+            
+            for(int i=1;i<=p;i++){
+                varString.pop_back();
+            }
+            
+            
+        }
         void processObject(const Value& doc){
             if(useLBDebug){
                 printf("------ \n");
             }
             
-            
+            printf("Current Level %d\n",currentLevel);
             
             for (Value::ConstMemberIterator itr = doc.MemberBegin();
                  itr != doc.MemberEnd(); ++itr)
             {
+                printf("Current Level %d\n",currentLevel);
+                
                 bool intDone = false;
                 if(kTypeNames[itr->value.GetType()] == kTypeNames[3]){
                     if(useLBDebug){
                         printf("Type of member processObject Object %s is %s\n",itr->name.GetString(), kTypeNames[itr->value.GetType()]);
                     }
                     const rapidjson::Value& membersObj = doc[itr->name.GetString()];
-                    parentVar = itr->name.GetString();
-                    parentVarTest = itr->name.GetString();
-                    cout << "what is it " << parentVarTest << endl;
+                   
+                    //if(varString.size() == 0){
+                        varString.push_back(itr->name.GetString());
+                       
+                    //}
+                    
+                    
+                    if(useLBDebug){
+                        printf("%s\n",this->getVarString().c_str());
+                    }
+                    currentLevel++;
                     this->processObject(membersObj);
-                    parentVar = "";
-                    parentVarTest = "";
+                    currentLevel--;
+                    varString.pop_back();
+                    
                 }else if(kTypeNames[itr->value.GetType()] == kTypeNames[4]){
                     if(useLBDebug){
                         printf("Type of member processObject Array %s is %s\n",itr->name.GetString(), kTypeNames[itr->value.GetType()]);
                     }
                     string pVar = "";
-                    string pVarTest = "";
+                  
                     
-                    if(parentVar != ""){
-                        pVar = parentVar;
+                    if(varString.size() > 0){
+                        pVar = this->getVarString();
                     }
-                    if(parentVarTest != ""){
-                        pVarTest = parentVarTest;
-                    }
+                    
                     stringstream arrayCount;
                     arrayCount << doc[itr->name.GetString()].Size();
                     stringstream arrayCountText;
-                    if(pVarTest != ""){
-                        
-                        arrayCountText << pVarTest.c_str() << "_" << itr->name.GetString() << "_count";
-                     
+                    if(pVar != ""){
+                        arrayCountText << pVar.c_str() << "_" << itr->name.GetString() << "_count";
                     }else{
                         arrayCountText << itr->name.GetString() << "_count";
                         
+                        
                     }
                     
-                    
                     if(useLBDebug){
+                        printf("%s\n",arrayCountText.str().c_str());
+                    
                         recordTest.insert(make_pair(arrayCountText.str(),arrayCount.str()));
                     }
                     record.insert(make_pair(arrayCountText.str(),arrayCount.str()));
+                    
+                   
                     for (SizeType i = 0; i < doc[itr->name.GetString()].Size(); i++){
+                        multiItemsDone = false;
                         const rapidjson::Value& membersArray = doc[itr->name.GetString()][i];
-                        cout << "Test" << endl;
-                        stringstream multiItems;
-                        stringstream multiItemsTest;
-                        
+                       
+                        stringstream arrayCountI;
+                        arrayCountI << i;
                         if(doc[itr->name.GetString()][i].IsArray()){
-                            cout << "Test2" << endl;
-                            multiItems << itr->name.GetString() << "_" << i;
-                            multiItemsTest << itr->name.GetString() << "[" << i << "]";
-                            parentVar = multiItems.str();
-                            parentVarTest = multiItemsTest.str();
-                            cout << parentVarTest << endl;
+                            if(varString.size() > 0){
+                                
+                                if(i==0){
+                                    varString.push_back(itr->name.GetString());
+                                    varString.push_back(arrayCountI.str());
+                                }else{
+                                    
+                                    varString.push_back(arrayCountI.str());
+                                }
+                            }else{
+                                
+                                varString.push_back(itr->name.GetString());
+                                varString.push_back(arrayCountI.str());
+                            }
+                           
+                            if(useLBDebug){
+                                printf("%s\n",this->getVarString().c_str());
+                            }
+                            currentLevel++;
                             this->processArray(membersArray);
+                            currentLevel--;
+                            varString.pop_back();
                         }else if(doc[itr->name.GetString()][i].IsObject()){
                             
-                            multiItems << itr->name.GetString() << "_" << i;
-                            multiItemsTest << itr->name.GetString() << "[" << i << "]";
-                            parentVar = multiItems.str();
-                            parentVarTest = multiItemsTest.str();
-                            this->processObject(membersArray);
-                        }else{
-                            if(pVar != ""){
-                                multiItems << pVar.c_str() << "_" << itr->name.GetString() << "_" << i;
-                            }else{
-                                multiItems << itr->name.GetString() << "_" << i;
+                            if(varString.size() > 0){
                                 
-                            }
-                            parentVar = multiItems.str();
-                            if(pVarTest != ""){
-                                multiItemsTest << pVarTest.c_str() << "_" << itr->name.GetString() << "[" << i << "]";
+                                if(i==0){
+                                    varString.push_back(itr->name.GetString());
+                                    varString.push_back(arrayCountI.str());
+                                }else{
+                                    
+                                    varString.push_back(arrayCountI.str());
+                                }
                             }else{
-                                multiItemsTest << itr->name.GetString() << "[" << i << "]";
                                 
+                                varString.push_back(itr->name.GetString());
+                                varString.push_back(arrayCountI.str());
                             }
-                            parentVarTest = multiItemsTest.str();
+                            
                             if(useLBDebug){
-                                outputVars << pVar.c_str() << "\n";
-                                outputVars << parentVar.c_str() << "\n";
-                                outputVarsTest << " one " << pVarTest.c_str() << "\n";
-                                outputVarsTest << " two " << parentVarTest.c_str() << "\n";
+                                printf("%s\n",this->getVarString().c_str());
                             }
+                            currentLevel++;
+                            this->processObject(membersArray);
+                            currentLevel--;
+                            varString.pop_back();
+                        }else{
+                            if(varString.size() > 0){
+                                
+                                if(i==0){
+                                    varString.push_back(itr->name.GetString());
+                                    varString.push_back(arrayCountI.str());
+                                }else{
+                                    
+                                    varString.push_back(arrayCountI.str());
+                                }
+                            }else{
+                                
+                                varString.push_back(itr->name.GetString());
+                                varString.push_back(arrayCountI.str());
+                            }
+                            
+                            if(useLBDebug){
+                                printf("%s\n",this->getVarString().c_str());
+                            }
+                            currentLevel++;
                             this->processValue(membersArray);
+                            currentLevel--;
+                            
                         }
                         
                         
                     }
-                    parentVar = "";
-                    parentVarTest = "";
+                    varString.pop_back();
+                    
                 }else{
                     if(useLBDebug){
                         printf("Type of member processObject Value is %s", kTypeNames[itr->value.GetType()]);
                     }
+                    
                     if(itr->value.IsString()){
                         if(useLBDebug){
                             printf(" %s = %s",itr->name.GetString(),itr->value.GetString());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
                         
-                        LBName << itr->name.GetString();
                         LBValue << itr->value.GetString();
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf("%s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
+                        varString.pop_back();
                         
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << itr->value.GetString();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
                     }
                     if(itr->value.IsNumber()){
                         if(itr->value.IsInt()){
@@ -182,23 +247,21 @@ namespace LB{
                                 if(useLBDebug){
                                     printf(" %s = %d ",itr->name.GetString(),itr->value.GetInt());
                                 }
-                                if(parentVar != ""){
-                                    LBName << parentVar << "_";
-                                }
-                                LBName << itr->name.GetString();
+                                
                                 LBValue << itr->value.GetInt();
+                                varString.push_back(itr->name.GetString());
+                                LBName << this->getVarString();
+                                
                                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                                
+                                
+                                if(useLBDebug){
+                                    printf("%s\n",this->getVarString().c_str());
+                                }
+                                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                 LBName.str(std::string());
                                 LBValue.str(std::string());
-                                
-                                if(parentVarTest != ""){
-                                    LBNameTest << parentVarTest << "_";
-                                }
-                                LBNameTest << itr->name.GetString();
-                                LBValueTest << itr->value.GetInt();
-                                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                LBNameTest.str(std::string());
-                                LBValueTest.str(std::string());
+                                varString.pop_back();
                                 intDone = true;
                             }
                             //printf(" %s = %d ",itr->name.GetString(),itr->value.GetInt());
@@ -207,46 +270,42 @@ namespace LB{
                             if(useLBDebug){
                                 printf(" %s = %f ",itr->name.GetString(),itr->value.GetDouble());
                             }
-                            if(parentVar != ""){
-                                LBName << parentVar << "_";
-                            }
-                            LBName << itr->name.GetString();
+                            
                             LBValue << itr->value.GetDouble();
+                            varString.push_back(itr->name.GetString());
+                            LBName << this->getVarString();
+                            
                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                            
+                            
+                            if(useLBDebug){
+                                printf("%s\n",this->getVarString().c_str());
+                            }
+                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                             LBName.str(std::string());
                             LBValue.str(std::string());
-                            
-                            if(parentVarTest != ""){
-                                LBNameTest << parentVarTest << "_";
-                            }
-                            LBNameTest << itr->name.GetString();
-                            LBValueTest << itr->value.GetDouble();
-                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                            LBNameTest.str(std::string());
-                            LBValueTest.str(std::string());
+                            varString.pop_back();
                         }
                         if(itr->value.IsInt64()){
                             if(!intDone){
                                 if(useLBDebug){
                                     printf(" %s = %lld ",itr->name.GetString(),itr->value.GetInt64());
                                 }
-                                if(parentVar != ""){
-                                    LBName << parentVar << "_";
-                                }
-                                LBName << itr->name.GetString();
+                                
                                 LBValue << itr->value.GetInt64();
+                                varString.push_back(itr->name.GetString());
+                                LBName << this->getVarString();
+                                
                                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                                
+                                
+                                if(useLBDebug){
+                                    printf("%s\n",this->getVarString().c_str());
+                                }
+                                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                 LBName.str(std::string());
                                 LBValue.str(std::string());
-                                
-                                if(parentVarTest != ""){
-                                    LBNameTest << parentVarTest << "_";
-                                }
-                                LBNameTest << itr->name.GetString();
-                                LBValueTest << itr->value.GetInt64();
-                                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                LBNameTest.str(std::string());
-                                LBValueTest.str(std::string());
+                                varString.pop_back();
                             }
                             
                         }
@@ -255,45 +314,41 @@ namespace LB{
                         if(useLBDebug){
                             printf(" %s = NULL ",itr->name.GetString());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
-                        LBName << itr->name.GetString();
+                        
                         LBValue << "Null";
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << "Null";
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
+                        varString.pop_back();
                     }
                     if(itr->value.IsBool()){
                         if(useLBDebug){
                             printf(" %s = %d ",itr->name.GetString(),itr->value.GetBool());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
-                        LBName << itr->name.GetString();
+                        
                         LBValue << itr->value.GetBool();
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << itr->value.GetBool();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
+                        varString.pop_back();
                     }
                     if(useLBDebug){
                         printf("\n");
@@ -301,7 +356,10 @@ namespace LB{
                     //
                     
                 }
+                
             }
+            //varString.clear();
+         
             
         }
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -316,12 +374,11 @@ namespace LB{
                 printf("------\n");
             }
             bool intDone = false;
-            cout << "Test3" << endl;
+           
             
             
             if(doc.IsArray()){
-                cout << "Test4" << endl;
-                cout << doc.Size() << endl;
+                cout << "Test IS ARRAY\n" << endl;
                 
             }else{
            
@@ -336,84 +393,76 @@ namespace LB{
                     }
                     const rapidjson::Value& memberObj = itr->value;
                     if(memberObj.IsObject()){
-                        if(parentVar != ""){
-                            stringstream ss;
-                            ss << "_" << itr->name.GetString();
-                            parentVar += ss.str();
+                        if(varString.size() > 0){
+                            varString.push_back(itr->name.GetString());
                         }
                         
-                        if(parentVarTest != ""){
-                            stringstream ssTest;
-                            ssTest << "_" << itr->name.GetString();
-                            parentVarTest += ssTest.str();
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
                         }
-                        
+                      
+                        currentLevel++;
                         this->processObject(memberObj);
+                        currentLevel--;
+                        varString.pop_back();
                     }else if(memberObj.IsArray()){
-                        if(parentVar != ""){
-                            stringstream ss;
-                            ss << "_" << itr->name.GetString();
-                            parentVar += ss.str();
-                        }
-                        if(parentVarTest != ""){
-                            stringstream ssTest;
-                            ssTest << "_" << itr->name.GetString();
-                            parentVarTest += ssTest.str();
+                        if(varString.size() > 0){
+                            varString.push_back(itr->name.GetString());
                         }
                         
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        currentLevel++;
                         this->processArray(memberObj);
+                        currentLevel--;
+                        varString.pop_back();
                     }else{
                         for (SizeType i = 0; i < itr->value.Size(); i++){
                             intDone = false;
                             const rapidjson::Value& membersObj = itr->value[i];
                             if(membersObj.IsObject()){
-                                if(parentVar != ""){
-                                    stringstream ss;
-                                    ss << "_" << itr->name.GetString();
-                                    parentVar += ss.str();
+                                if(varString.size() > 0){
+                                    varString.push_back(itr->name.GetString());
                                 }
-                                if(parentVarTest != ""){
-                                    stringstream ssTest;
-                                    ssTest << "_" << itr->name.GetString();
-                                    parentVarTest += ssTest.str();
+                                
+                                if(useLBDebug){
+                                    printf(" %s\n",this->getVarString().c_str());
                                 }
                                 this->processObject(membersObj);
                             }else if(membersObj.IsArray()){
-                                if(parentVar != ""){
-                                    stringstream ss;
-                                    ss << "_" << itr->name.GetString();
-                                    parentVar += ss.str();
+                                if(varString.size() > 0){
+                                    varString.push_back(itr->name.GetString());
                                 }
-                                if(parentVarTest != ""){
-                                    stringstream ssTest;
-                                    ssTest << "_" << itr->name.GetString();
-                                    parentVarTest += ssTest.str();
+                                
+                                if(useLBDebug){
+                                    printf(" %s\n",this->getVarString().c_str());
                                 }
-                                cout << itr->name.GetString() << endl;
+                                currentLevel++;
                                 this->processArray(membersObj);
+                                currentLevel--;
+                                varString.pop_back();
                             }else{
                                 if(useLBDebug){
                                     printf("Type of member processArray Object Value %s is %s",itr->name.GetString(), kTypeNames[itr->value.GetType()]);
                                 }
                                 if(itr->value.IsString()){
                                     printf(" %s = %s ",itr->name.GetString(),itr->value.GetString());
-                                    if(parentVar != ""){
-                                        LBName << parentVar << "_";
-                                    }
-                                    LBName << itr->name.GetString();
+                                    
                                     LBValue << itr->value.GetString();
+                                    varString.push_back(itr->name.GetString());
+                                    LBName << this->getVarString();
+                                    
                                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                                    
+                                    
+                                    if(useLBDebug){
+                                        printf(" %s\n",this->getVarString().c_str());
+                                    }
+                                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                     LBName.str(std::string());
                                     LBValue.str(std::string());
-                                    
-                                    if(parentVarTest != ""){
-                                        LBNameTest << parentVarTest << "_";
-                                    }
-                                    LBNameTest << itr->name.GetString();
-                                    LBValueTest << itr->value.GetString();
-                                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                    LBNameTest.str(std::string());
-                                    LBValueTest.str(std::string());
+                                    varString.pop_back();
                                 }
                                 if(itr->value.IsNumber()){
                                     if(itr->value.IsInt()){
@@ -422,24 +471,20 @@ namespace LB{
                                                 printf("int %s = %d ",itr->name.GetString(),itr->value.GetInt());
                                             }
                                             
-                                            if(parentVar != ""){
-                                                LBName << parentVar << "_";
-                                            }
-                                            LBName << itr->name.GetString();
                                             LBValue << itr->value.GetInt();
+                                            varString.push_back(itr->name.GetString());
+                                            LBName << this->getVarString();
+                                            
                                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                                            
+                                            
+                                            if(useLBDebug){
+                                                printf(" %s\n",this->getVarString().c_str());
+                                            }
+                                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                             LBName.str(std::string());
                                             LBValue.str(std::string());
-                                            
-                                            if(parentVarTest != ""){
-                                                LBNameTest << parentVarTest << "_";
-                                            }
-                                            LBNameTest << itr->name.GetString();
-                                            LBValueTest << itr->value.GetInt();
-                                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                            LBNameTest.str(std::string());
-                                            LBValueTest.str(std::string());
-                                            
+                                            varString.pop_back();
                                             intDone = true;
                                         }
                                         //printf(" %s = %d ",itr->name.GetString(),itr->value.GetInt());
@@ -448,23 +493,21 @@ namespace LB{
                                         if(useLBDebug){
                                             printf(" %s = %f ",itr->name.GetString(),itr->value.GetDouble());
                                         }
-                                        if(parentVar != ""){
-                                            LBName << parentVar << "_";
-                                        }
-                                        LBName << itr->name.GetString();
+                                        
                                         LBValue << itr->value.GetDouble();
+                                        varString.push_back(itr->name.GetString());
+                                        LBName << this->getVarString();
+                                        
                                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                                        
+                                        
+                                        if(useLBDebug){
+                                            printf(" %s\n",this->getVarString().c_str());
+                                        }
+                                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                         LBName.str(std::string());
                                         LBValue.str(std::string());
-                                        
-                                        if(parentVarTest != ""){
-                                            LBNameTest << parentVarTest << "_";
-                                        }
-                                        LBNameTest << itr->name.GetString();
-                                        LBValueTest << itr->value.GetDouble();
-                                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                        LBNameTest.str(std::string());
-                                        LBValueTest.str(std::string());
+                                        varString.pop_back();
                                     }
                                     if(itr->value.IsInt64()){
                                         if(!intDone){
@@ -472,23 +515,20 @@ namespace LB{
                                                 printf("int64 %s = %lld ",itr->name.GetString(),itr->value.GetInt64());
                                             }
                                             
-                                            if(parentVar != ""){
-                                                LBName << parentVar << "_";
-                                            }
-                                            LBName << itr->name.GetString();
                                             LBValue << itr->value.GetInt64();
+                                            varString.push_back(itr->name.GetString());
+                                            LBName << this->getVarString();
+                                            
+                                            record.insert(make_pair(LBName.str(),LBValue.str()));
+                                            
+                                            
+                                            if(useLBDebug){
+                                                printf(" %s\n",this->getVarString().c_str());
+                                            }
                                             recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                             LBName.str(std::string());
                                             LBValue.str(std::string());
-                                            
-                                            if(parentVarTest != ""){
-                                                LBNameTest << parentVarTest << "_";
-                                            }
-                                            LBNameTest << itr->name.GetString();
-                                            LBValueTest << itr->value.GetInt64();
-                                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                            LBNameTest.str(std::string());
-                                            LBValueTest.str(std::string());
+                                            varString.pop_back();
                                             
                                         }
                                         
@@ -498,46 +538,41 @@ namespace LB{
                                     if(useLBDebug){
                                         printf(" %s = NULL ",itr->name.GetString());
                                     }
-                                    if(parentVar != ""){
-                                        LBName << parentVar << "_";
-                                    }
-                                    LBName << itr->name.GetString();
+                                    
                                     LBValue << "Null";
+                                    varString.push_back(itr->name.GetString());
+                                    LBName << this->getVarString();
+                                    
                                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                                    
+                                    
+                                    if(useLBDebug){
+                                        printf(" %s\n",this->getVarString().c_str());
+                                    }
+                                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                     LBName.str(std::string());
                                     LBValue.str(std::string());
-                                    
-                                    if(parentVarTest != ""){
-                                        LBNameTest << parentVarTest << "_";
-                                    }
-                                    LBNameTest << itr->name.GetString();
-                                    LBValueTest << "Null";
-                                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                    LBNameTest.str(std::string());
-                                    LBValueTest.str(std::string());
+                                    varString.pop_back();
                                 }
                                 if(itr->value.IsBool()){
                                     if(useLBDebug){
                                         printf(" %s = %d ",itr->name.GetString(),itr->value.GetBool());
                                     }
-                                    if(parentVar != ""){
-                                        LBName << parentVar << "_";
-                                    }
-                                    LBName << itr->name.GetString();
+                                   
                                     LBValue << itr->value.GetBool();
+                                    varString.push_back(itr->name.GetString());
+                                    LBName << this->getVarString();
+                                    
                                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                                    
+                                    
+                                    if(useLBDebug){
+                                        printf(" %s\n",this->getVarString().c_str());
+                                    }
+                                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                     LBName.str(std::string());
                                     LBValue.str(std::string());
-                                    
-                                    if(parentVarTest != ""){
-                                        LBNameTest << parentVarTest << "_";
-                                    }
-                                    LBNameTest << itr->name.GetString();
-                                    LBValueTest << itr->value.GetBool();
-                                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                    LBNameTest.str(std::string());
-                                    LBValueTest.str(std::string());
-                                    
+                                    varString.pop_back();
                                 }
                                 printf("\n");
                             }
@@ -558,23 +593,21 @@ namespace LB{
                             if(useLBDebug){
                                 printf(" %s_%d = %s ",itr->name.GetString(),num,itr1->GetString());
                             }
-                            if(parentVar != ""){
-                                LBName << parentVar << "_";
-                            }
-                            LBName << itr->name.GetString() << num;
+                            
                             LBValue << itr1->GetString();
+                            varString.push_back(itr->name.GetString());
+                            LBName << this->getVarString();
+                            
                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                            
+                            
+                            if(useLBDebug){
+                                printf(" %s\n",this->getVarString().c_str());
+                            }
+                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                             LBName.str(std::string());
                             LBValue.str(std::string());
-                            
-                            if(parentVarTest != ""){
-                                LBNameTest << parentVarTest << "_";
-                            }
-                            LBNameTest << itr->name.GetString() << num;
-                            LBValueTest << itr1->GetString();
-                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                            LBNameTest.str(std::string());
-                            LBValueTest.str(std::string());
+                            varString.pop_back();
                         }
                         if(itr1->IsNumber()){
                             if(itr1->IsInt()){
@@ -582,24 +615,21 @@ namespace LB{
                                     if(useLBDebug){
                                         printf(" %s_%d = %d ",itr->name.GetString(),num,itr1->GetInt());
                                     }
-                                    if(parentVar != ""){
-                                        LBName << parentVar << "_";
-                                    }
-                                    LBName << itr->name.GetString() << num;
+                                    
                                     LBValue << itr1->GetInt();
+                                    varString.push_back(itr->name.GetString());
+                                    LBName << this->getVarString();
+                                    
                                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                                    
+                                    
+                                    if(useLBDebug){
+                                        printf(" %s\n",this->getVarString().c_str());
+                                    }
+                                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                     LBName.str(std::string());
                                     LBValue.str(std::string());
-                                    
-                                    if(parentVarTest != ""){
-                                        LBNameTest << parentVarTest << "_";
-                                    }
-                                    LBNameTest << itr->name.GetString() << num;
-                                    LBValueTest << itr1->GetInt();
-                                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                    LBNameTest.str(std::string());
-                                    LBValueTest.str(std::string());
-                                    
+                                    varString.pop_back();
                                     intDone = true;
                                 }
                                 //printf(" %s_%d = %d ",itr->name.GetString(),num,itr->value.GetInt());
@@ -608,46 +638,42 @@ namespace LB{
                                 if(useLBDebug){
                                     printf(" %s_%d = %f ",itr->name.GetString(),num,itr1->GetDouble());
                                 }
-                                if(parentVar != ""){
-                                    LBName << parentVar << "_";
-                                }
-                                LBName << itr->name.GetString() << num;
+                                
                                 LBValue << itr1->GetDouble();
+                                varString.push_back(itr->name.GetString());
+                                LBName << this->getVarString();
+                                
                                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                                
+                                
+                                if(useLBDebug){
+                                    printf(" %s\n",this->getVarString().c_str());
+                                }
+                                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                 LBName.str(std::string());
                                 LBValue.str(std::string());
-                                
-                                if(parentVarTest != ""){
-                                    LBNameTest << parentVarTest << "_";
-                                }
-                                LBNameTest << itr->name.GetString() << num;
-                                LBValueTest << itr1->GetDouble();
-                                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                LBNameTest.str(std::string());
-                                LBValueTest.str(std::string());
+                                varString.pop_back();
                             }
                             if(itr1->IsInt64()){
                                 if(!intDone){
                                     if(useLBDebug){
                                         printf(" %s_%d = %lld ",itr->name.GetString(),num,itr1->GetInt64());
                                     }
-                                    if(parentVar != ""){
-                                        LBName << parentVar << "_";
-                                    }
-                                    LBName << itr->name.GetString() << num;
+                                    
                                     LBValue << itr1->GetInt64();
+                                    varString.push_back(itr->name.GetString());
+                                    LBName << this->getVarString();
+                                    
                                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                                    
+                                    
+                                    if(useLBDebug){
+                                        printf(" %s\n",this->getVarString().c_str());
+                                    }
+                                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                     LBName.str(std::string());
                                     LBValue.str(std::string());
-                                    
-                                    if(parentVarTest != ""){
-                                        LBNameTest << parentVarTest << "_";
-                                    }
-                                    LBNameTest << itr->name.GetString() << num;
-                                    LBValueTest << itr1->GetInt64();
-                                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                    LBNameTest.str(std::string());
-                                    LBValueTest.str(std::string());
+                                    varString.pop_back();
                                 }
                             }
                             
@@ -656,45 +682,41 @@ namespace LB{
                             if(useLBDebug){
                                 printf(" %s_%d = NULL ",itr->name.GetString(),num);
                             }
-                            if(parentVar != ""){
-                                LBName << parentVar << "_";
-                            }
-                            LBName << itr->name.GetString() << num;
+                            
                             LBValue << "Null";
+                            varString.push_back(itr->name.GetString());
+                            LBName << this->getVarString();
+                            
                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                            
+                            
+                            if(useLBDebug){
+                                printf(" %s\n",this->getVarString().c_str());
+                            }
+                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                             LBName.str(std::string());
                             LBValue.str(std::string());
-                            
-                            if(parentVarTest != ""){
-                                LBNameTest << parentVarTest << "_";
-                            }
-                            LBNameTest << itr->name.GetString() << num;
-                            LBValueTest << "Null";
-                            record.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                            LBNameTest.str(std::string());
-                            LBValueTest.str(std::string());
+                            varString.pop_back();
                         }
                         if(itr1->IsBool()){
                             if(useLBDebug){
                                 printf(" %s_%d = %d ",itr->name.GetString(),num,itr1->GetBool());
                             }
-                            if(parentVar != ""){
-                                LBName << parentVar << "_" << num;
-                            }
-                            LBName << itr->name.GetString();
+                            
                             LBValue << itr1->GetBool();
+                            varString.push_back(itr->name.GetString());
+                            LBName << this->getVarString();
+                            
                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                            
+                            
+                            if(useLBDebug){
+                                printf(" %s\n",this->getVarString().c_str());
+                            }
+                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                             LBName.str(std::string());
                             LBValue.str(std::string());
-                            
-                            if(parentVarTest != ""){
-                                LBNameTest << parentVarTest << "_" << num;
-                            }
-                            LBNameTest << itr->name.GetString();
-                            LBValueTest << itr1->GetBool();
-                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                            LBNameTest.str(std::string());
-                            LBValueTest.str(std::string());
+                            varString.pop_back();
                         }
                         if(useLBDebug){
                             printf("\n");
@@ -715,23 +737,21 @@ namespace LB{
                     }
                     if(itr->value.IsString()){
                         printf(" %s = %s ",itr->name.GetString(),itr->value.GetString());
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
-                        LBName << itr->name.GetString();
+                        
                         LBValue << itr->value.GetString();
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << itr->value.GetString();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
+                        varString.pop_back();
                     }
                     if(itr->value.IsNumber()){
                         if(itr->value.IsInt()){
@@ -739,23 +759,21 @@ namespace LB{
                                 if(useLBDebug){
                                     printf("int %s = %d ",itr->name.GetString(),itr->value.GetInt());
                                 }
-                                if(parentVar != ""){
-                                    LBName << parentVar << "_";
-                                }
-                                LBName << itr->name.GetString();
+                                
                                 LBValue << itr->value.GetInt();
+                                varString.push_back(itr->name.GetString());
+                                LBName << this->getVarString();
+                                
                                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                                
+                                
+                                if(useLBDebug){
+                                    printf(" %s\n",this->getVarString().c_str());
+                                }
+                                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                 LBName.str(std::string());
                                 LBValue.str(std::string());
-                                
-                                if(parentVarTest != ""){
-                                    LBNameTest << parentVarTest << "_";
-                                }
-                                LBNameTest << itr->name.GetString();
-                                LBValueTest << itr->value.GetInt();
-                                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                LBNameTest.str(std::string());
-                                LBValueTest.str(std::string());
+                                varString.pop_back();
                                 intDone = true;
                             }
                             //printf(" %s = %d ",itr->name.GetString(),itr->value.GetInt());
@@ -764,46 +782,42 @@ namespace LB{
                             if(useLBDebug){
                                 printf(" %s = %f ",itr->name.GetString(),itr->value.GetDouble());
                             }
-                            if(parentVar != ""){
-                                LBName << parentVar << "_";
-                            }
-                            LBName << itr->name.GetString();
+                           
                             LBValue << itr->value.GetDouble();
+                            varString.push_back(itr->name.GetString());
+                            LBName << this->getVarString();
+                            
                             record.insert(make_pair(LBName.str(),LBValue.str()));
+                            
+                            
+                            if(useLBDebug){
+                                printf(" %s\n",this->getVarString().c_str());
+                            }
+                            recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                             LBName.str(std::string());
                             LBValue.str(std::string());
-                            
-                            if(parentVarTest != ""){
-                                LBNameTest << parentVarTest << "_";
-                            }
-                            LBNameTest << itr->name.GetString();
-                            LBValueTest << itr->value.GetDouble();
-                            recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                            LBNameTest.str(std::string());
-                            LBValueTest.str(std::string());
+                            varString.pop_back();
                         }
                         if(itr->value.IsInt64()){
                             if(!intDone){
                                 if(useLBDebug){
                                     printf("int64 %s = %lld ",itr->name.GetString(),itr->value.GetInt64());
                                 }
-                                if(parentVar != ""){
-                                    LBName << parentVar << "_";
-                                }
-                                LBName << itr->name.GetString();
+                                
                                 LBValue << itr->value.GetInt64();
+                                varString.push_back(itr->name.GetString());
+                                LBName << this->getVarString();
+                                
                                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                                
+                                
+                                if(useLBDebug){
+                                    printf(" %s\n",this->getVarString().c_str());
+                                }
+                                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                                 LBName.str(std::string());
                                 LBValue.str(std::string());
-                                
-                                if(parentVarTest != ""){
-                                    LBNameTest << parentVarTest << "_";
-                                }
-                                LBNameTest << itr->name.GetString();
-                                LBValueTest << itr->value.GetInt64();
-                                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                                LBNameTest.str(std::string());
-                                LBValueTest.str(std::string());
+                                varString.pop_back();
                             }
                         }
                     }
@@ -811,45 +825,41 @@ namespace LB{
                         if(useLBDebug){
                             printf(" %s = NULL ",itr->name.GetString());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
-                        LBName << itr->name.GetString();
+                        
                         LBValue << "Null";
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << "Null";
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
+                        varString.pop_back();
                     }
                     if(itr->value.IsBool()){
                         if(useLBDebug){
                             printf(" %s = %d ",itr->name.GetString(),itr->value.GetBool());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar << "_";
-                        }
-                        LBName << itr->name.GetString();
+                        
                         LBValue << itr->value.GetBool();
+                        varString.push_back(itr->name.GetString());
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest << "_";
-                        }
-                        LBNameTest << itr->name.GetString();
-                        LBValueTest << itr->value.GetBool();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValue.str(std::string());
+                        varString.pop_back();
                     }
                     if(useLBDebug){
                         printf("\n");
@@ -863,167 +873,128 @@ namespace LB{
         void processValue(const Value& doc){
             bool intDone = false;
             if(useLBDebug){
-                printf("Type of member processObject Value is %s", kTypeNames[doc.GetType()]);
+                printf("Type of member processValue Value is %s", kTypeNames[doc.GetType()]);
             }
             if(doc.IsString()){
-                if(useLBDebug){
-                    printf(" %s = %s",parentVar.c_str(),doc.GetString());
-                }
-                if(parentVar != ""){
-                    LBName << parentVar;
-                }else{
-                    LBName << doc.GetString();
-                }
+                
                 
                 LBValue << doc.GetString();
+                
+                LBName << this->getVarString();
+                
                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                
+                
+                if(useLBDebug){
+                    printf(" %s\n",this->getVarString().c_str());
+                }
+                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                 LBName.str(std::string());
                 LBValue.str(std::string());
-                
-                if(parentVarTest != ""){
-                    LBNameTest << parentVarTest;
-                }else{
-                    LBNameTest << doc.GetString();
-                }
-                
-                LBValueTest << doc.GetString();
-                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                LBNameTest.str(std::string());
-                LBValueTest.str(std::string());
-                
+                varString.pop_back();
             }
             if(doc.IsNumber()){
                 if(doc.IsInt()){
                     if(!intDone){
                         if(useLBDebug){
-                            printf(" %s = %d ",parentVar.c_str(),doc.GetInt());
+                            printf(" %s = %d ",this->getVarString().c_str(),doc.GetInt());
                         }
-                        if(parentVar != ""){
-                            LBName << parentVar ;
-                        }else{
-                            LBName << doc.GetString();
-                        }
+                        
                         LBValue << doc.GetInt();
+                        
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest ;
-                        }else{
-                            LBNameTest << doc.GetString();
-                        }
-                        LBValueTest << doc.GetInt();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
-                        
+                        varString.pop_back();
                         intDone = true;
                     }
                     //printf(" %s = %d ",itr->name.GetString(),itr->value.GetInt());
                 }
                 if(doc.IsDouble()){
-                    if(useLBDebug){
-                        printf(" %s = %f ",parentVar.c_str(),doc.GetDouble());
-                    }
-                    if(parentVar != ""){
-                        LBName << parentVar;
-                    }else{
-                        LBName << doc.GetString();
-                    }
+                   
+                    
                     LBValue << doc.GetDouble();
+                    
+                    LBName << this->getVarString();
+                    
                     record.insert(make_pair(LBName.str(),LBValue.str()));
+                    
+                    
+                    if(useLBDebug){
+                        printf(" %s\n",this->getVarString().c_str());
+                    }
+                    recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                     LBName.str(std::string());
                     LBValue.str(std::string());
-                    
-                    if(parentVarTest != ""){
-                        LBNameTest << parentVarTest;
-                    }else{
-                        LBNameTest << doc.GetString();
-                    }
-                    LBValueTest << doc.GetDouble();
-                    recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                    LBNameTest.str(std::string());
-                    LBValueTest.str(std::string());
+                    varString.pop_back();
                     
                 }
                 if(doc.IsInt64()){
                     if(!intDone){
-                        if(useLBDebug){
-                            printf(" %s = %lld ",parentVar.c_str(),doc.GetInt64());
-                        }
-                        if(parentVar != ""){
-                            LBName << parentVar;
-                        }else{
-                            LBName << doc.GetString();
-                        }
+                        
+                        
                         LBValue << doc.GetInt64();
+                        
+                        LBName << this->getVarString();
+                        
                         record.insert(make_pair(LBName.str(),LBValue.str()));
+                        
+                        
+                        if(useLBDebug){
+                            printf(" %s\n",this->getVarString().c_str());
+                        }
+                        recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                         LBName.str(std::string());
                         LBValue.str(std::string());
-                        
-                        if(parentVarTest != ""){
-                            LBNameTest << parentVarTest;
-                        }else{
-                            LBNameTest << doc.GetString();
-                        }
-                        LBValueTest << doc.GetInt64();
-                        recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                        LBNameTest.str(std::string());
-                        LBValueTest.str(std::string());
                     }
                     
                 }
             }
             if(doc.IsNull()){
-                if(useLBDebug){
-                    printf(" %s = NULL ",parentVar.c_str());
-                }
-                if(parentVar != ""){
-                    LBName << parentVar;
-                }else{
-                    LBName << doc.GetString();
-                }
+               
+                
                 LBValue << "Null";
+               
+                LBName << this->getVarString();
+                
                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                
+                
+                if(useLBDebug){
+                    printf(" %s\n",this->getVarString().c_str());
+                }
+                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                 LBName.str(std::string());
                 LBValue.str(std::string());
-                
-                if(parentVarTest != ""){
-                    LBNameTest << parentVarTest;
-                }else{
-                    LBNameTest << doc.GetString();
-                }
-                LBValueTest << "Null";
-                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                LBNameTest.str(std::string());
-                LBValueTest.str(std::string());
+                varString.pop_back();
                 
             }
             if(doc.IsBool()){
-                if(useLBDebug){
-                    printf(" %s = %d ",parentVar.c_str(),doc.GetBool());
-                }
                 
-                if(parentVar != ""){
-                    LBName << parentVar;
-                }else{
-                    LBName << doc.GetString();
-                }
+                
+                
                 LBValue << doc.GetBool();
+               
+                LBName << this->getVarString();
+                
                 record.insert(make_pair(LBName.str(),LBValue.str()));
+                
+                
+                if(useLBDebug){
+                    printf(" %s\n",this->getVarString().c_str());
+                }
+                recordTest.insert(make_pair(LBName.str(),LBValue.str()));
                 LBName.str(std::string());
                 LBValue.str(std::string());
-                
-                if(parentVarTest != ""){
-                    LBNameTest << parentVarTest;
-                }else{
-                    LBNameTest << doc.GetString();
-                }
-                LBValueTest << doc.GetBool();
-                recordTest.insert(make_pair(LBNameTest.str(),LBValueTest.str()));
-                LBNameTest.str(std::string());
-                LBValueTest.str(std::string());
+                varString.pop_back();
             }
             if(useLBDebug){
                 printf("\n");
@@ -1088,24 +1059,28 @@ namespace LB{
         
         void processDocument(Document::GenericDocument & doc){
             
-            parentVar = "";
-            parentVarTest = "";
+           
             
             if(doc.IsObject()){	// Document is a JSON value represents the root of DOM. Root can be either an object or array.
-                
+                if(useLBDebug){
+                    printf("---------------- Start Object -------------------\n\n");
+                }
                 this->processObject(doc);
                 records.insert(make_pair(0,record));
                 record.clear();
                 recordsTest.insert(make_pair(0,recordTest));
                 recordTest.clear();
+                if(useLBDebug){
+                    printf("---------------- End Object -------------------\n\n");
+                }
             }
             
             if(doc.IsArray()){
                 //int rec = 0;
-                //for (SizeType i = 0; i < 3; i++){
+                //for (SizeType i = 0; i < 1; i++){
                 for (SizeType i = 0; i < doc.Size(); i++){ // rapidjson uses SizeType instead of size_t.
                     if(useLBDebug){
-                        printf("---------------- Start -------------------\n\n");
+                        printf("---------------- Start Array -------------------\n\n");
                     }
                     const rapidjson::Value& membersObj = doc[i];
                     assert(membersObj.IsObject());
@@ -1114,8 +1089,10 @@ namespace LB{
                     record.clear();
                     recordsTest.insert(make_pair(i,recordTest));
                     recordTest.clear();
+                    varString.clear();
+                    
                     if(useLBDebug){
-                        printf("---------------- End -------------------\n\n");
+                        printf("---------------- End Array -------------------\n\n");
                     }
                 }
             }
@@ -1162,15 +1139,10 @@ namespace LB{
         stringstream LBOutput;
         stringstream LBName;
         stringstream LBValue;
-        
-        stringstream LBNameTest;
-        stringstream LBValueTest;
+
         
         stringstream outputVars;
         stringstream outputVarsTest;
-        
-        string parentVar;
-        string parentVarTest;
         
         string module = "";
         string method = "";
@@ -1452,6 +1424,7 @@ namespace LB{
             }
             
             string data = this->sendDataToUrl(postVals);
+
             cout << data << endl;
             const char *json = data.c_str();
 #if 0
