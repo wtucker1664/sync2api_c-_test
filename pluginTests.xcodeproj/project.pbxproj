@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3F560D951AEFC7F900DC27B7 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3F560D941AEFC7F900DC27B7 /* main.cpp */; };
+		3FB88F9A1CF44FA40056631D /* LBJSONRenderFM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3FB88F991CF44FA40056631D /* LBJSONRenderFM.cpp */; };
 		3FDA62B81B0388DA00F1D31D /* libcurl.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3FDA62B71B0388DA00F1D31D /* libcurl.4.dylib */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +27,7 @@
 /* Begin PBXFileReference section */
 		3F560D911AEFC7F900DC27B7 /* pluginTests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = pluginTests; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F560D941AEFC7F900DC27B7 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3FB88F991CF44FA40056631D /* LBJSONRenderFM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LBJSONRenderFM.cpp; path = pluginTests/LBJSONRenderFM.cpp; sourceTree = "<group>"; };
 		3FDA62AC1B03868800F1D31D /* document.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = document.h; sourceTree = "<group>"; };
 		3FDA62AD1B03868800F1D31D /* filestream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filestream.h; sourceTree = "<group>"; };
 		3FDA62AF1B03868800F1D31D /* pow10.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pow10.h; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 		3F560D881AEFC7F900DC27B7 = {
 			isa = PBXGroup;
 			children = (
+				3FB88F991CF44FA40056631D /* LBJSONRenderFM.cpp */,
 				3FFB37691B0CE205004C8431 /* LBJSONRenderFM.h */,
 				3FDA62B71B0388DA00F1D31D /* libcurl.4.dylib */,
 				3F560D931AEFC7F900DC27B7 /* pluginTests */,
@@ -160,6 +163,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FB88F9A1CF44FA40056631D /* LBJSONRenderFM.cpp in Sources */,
 				3F560D951AEFC7F900DC27B7 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

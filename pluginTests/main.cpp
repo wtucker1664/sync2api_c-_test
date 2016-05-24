@@ -347,27 +347,314 @@ int main( int argc, char ** argv ) {
     
     
      //   getObject()->setLicenceKeys("0b85a3eddf74b32d5b824311537aa4c51e39dff8","28cf64e0fc8f5598e51b3585f4769594b87c7f2c");
-    // getObject()->setLicenceKeys("37357e63e92692c16d6a387633a985f848f7a6ac","aee8490d80661c10c22da5378edb016b589c14af");
-    
+    getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf"); // warrens test account
     getObject()->clearRequest();
     
-    getObject()->setLicenceKeys("070a13d979221d85bae59f4b41d1444d00147b9e","87d4801e9eaaf96f7663650de440472d8dca5c91"); // Live account be careful
+    
+    //getObject()->setLicenceKeys("070a13d979221d85bae59f4b41d1444d00147b9e","87d4801e9eaaf96f7663650de440472d8dca5c91"); // Live account petrol scooter be careful
 //    
        getObject()->setLBDebug(true);
-//    getObject()->setModule("twitter");
-//    getObject()->setMethod("userTweets");
-    getObject()->setModule("ebay");
-    getObject()->setMethod("orders");
-    getObject()->setProperty("outputType", "json");
-    getObject()->setProperty("siteId", "3");
+    getObject()->setDebug(true);
+        getObject()->setProperty("outputType", "json");
+/* Twitter */
+    getObject()->setModule("twitter");
+    getObject()->setMethod("userTweets");
+
+/* Ebay */
+//    getObject()->setModule("ebay");
+//    getObject()->setMethod("AddFixedPriceItem");
+//    
+//    getObject()->setComplexProperty("BuyerRequirmentDetails");
+//    getObject()->setComplexProperty("ShipToRegistrationCountry");
+//    getObject()->setComplexProperty("true",1);
+//    
+//    getObject()->setProperty("SKU", "10067");
+//    
+//    getObject()->setProperty("buyItNowPrice", "5.49");
+//    
+//    getObject()->setProperty("conditionID", "1000" );
+//    
+//    getObject()->setProperty("country","GB");
+//    
+//    getObject()->setProperty("currency", "GBP");
+//    
+//    getObject()->setProperty("description", "Test" );
+//    
+//    getObject()->setProperty("dispatchTimeMax", "1");
+//    
+//    getObject()->setProperty("eBayPrimaryCategoryId","122299");
+//    
+//    //getObject()->setProperty("encryptDescription", "false");
+//    
+//    getObject()->setComplexProperty("excludeShipToLocation");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("LT",1);
+//    
+//    getObject()->setProperty("globalShipping","1");
+//    
+//    getObject()->setProperty("listingDuration", "Days_30");
+//    
+//    getObject()->setProperty("listingType", "FixedPriceItem");
+//    
+//    getObject()->setProperty("location","Coventry");
+//    
+//    getObject()->setProperty("measurementUnit","English");
+//    
+//    getObject()->setComplexProperty("packageDepth");
+//    getObject()->setComplexProperty("measurementSystem");
+//    getObject()->setComplexProperty("English",1);
+//    
+//    getObject()->setComplexProperty("packageDepth");
+//    getObject()->setComplexProperty("unit");
+//    getObject()->setComplexProperty("token",1);
+//    
+//    getObject()->setComplexProperty("packageDepth");
+//    getObject()->setComplexProperty("value");
+//    getObject()->setComplexProperty("",1);
+//    
+//    getObject()->setComplexProperty("packageLength");
+//    getObject()->setComplexProperty("measurementSystem");
+//    getObject()->setComplexProperty("English",1);
+//    
+//    getObject()->setComplexProperty("packageLength");
+//    getObject()->setComplexProperty("unit");
+//    getObject()->setComplexProperty("token",1);
+//    
+//    getObject()->setComplexProperty("packageLength");
+//    getObject()->setComplexProperty("value");
+//    getObject()->setComplexProperty("",1);
+//    
+//    getObject()->setComplexProperty("packageWidth");
+//    getObject()->setComplexProperty("measurementSystem");
+//    getObject()->setComplexProperty("English",1);
+//    
+//    getObject()->setComplexProperty("packageWidth");
+//    getObject()->setComplexProperty("unit");
+//    getObject()->setComplexProperty("token",1);
+//    
+//    getObject()->setComplexProperty("packageWidth");
+//    getObject()->setComplexProperty("value");
+//    getObject()->setComplexProperty("",1);
+//    
+//    getObject()->setProperty("payPalEmailAddress","test1.test1@linearblue.com");
+//    
+//    getObject()->setComplexProperty("paymentMethods");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("PayPal",1);
+//    
+//    getObject()->setComplexProperty("pictureDetails");
+//    getObject()->setComplexProperty("pictureURL");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("http://www.petrolscooter.co.uk/media/import/Images/IMG000031202/IMG000031202.jpg",1);
+//    
+//    getObject()->setComplexProperty("pictureDetails");
+//    getObject()->setComplexProperty("galleryType");
+//    getObject()->setComplexProperty("Gallery",1);
+//    
+//    getObject()->setProperty("postalCode","CV31BX");
+//    
+//    getObject()->setProperty("quantity","4");
+//    
+//    getObject()->setComplexProperty("returnPolicy");
+//    getObject()->setComplexProperty("returnsAcceptedOption");
+//    getObject()->setComplexProperty("ReturnsAccepted",1);
+//    
+//    getObject()->setComplexProperty("returnPolicy");
+//    getObject()->setComplexProperty("returnsWithinOption");
+//    getObject()->setComplexProperty("Days_14",1);
+//    
+//    getObject()->setComplexProperty("returnPolicy");
+//    getObject()->setComplexProperty("shippingCostPaidByOption");
+//    getObject()->setComplexProperty("Buyer",1);
+//    
+//    getObject()->setComplexProperty("weightMajor");
+//    getObject()->setComplexProperty("measurementSystem");
+//    getObject()->setComplexProperty("English",1);
+//    
+//    getObject()->setComplexProperty("weightMajor");
+//    getObject()->setComplexProperty("unit");
+//    getObject()->setComplexProperty("token",1);
+//    
+//    getObject()->setComplexProperty("weightMajor");
+//    getObject()->setComplexProperty("value");
+//    getObject()->setComplexProperty("0.5",1);
+//    
+//    getObject()->setProperty("shippingType","Flat");
+//    
+//    getObject()->setProperty("siteId","3");
+//    
+//    getObject()->setProperty("startPrice","5.49");
+//    
+//    getObject()->setProperty("subTitle","Test");
+//    
+//    getObject()->setProperty("title","Pit Dirt Bike 38mm Double Foam Red Air Filter 110cc 125cc Carburettor Manifold");
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("50.00",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("location");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("Asia",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("1",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_RoyalMailAirmailInternational",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("25.00",1);
+//    
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("100.00",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("location");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("Europe",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("3",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_CollectInPersonInternational",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("0.00",1);
+//    
+//    
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("2");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("100.00",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("2");
+//    getObject()->setComplexProperty("location");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("Asia",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("2");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("3",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("2");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_CollectInPersonInternational",1);
+//    
+//    getObject()->setComplexProperty("shippingServiceInternational");
+//    getObject()->setComplexProperty("2");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("50.00",1);
+//    
+//    
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("0.00",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("freeShipping");
+//    getObject()->setComplexProperty("true",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("1",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_RoyalMail48",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("0");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("0.00",1);
+//    
+//    
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("50.00",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("2",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_RoyalMail24",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("0.00",1);
+//    
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("100.00",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("priority");
+//    getObject()->setComplexProperty("3",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("type");
+//    getObject()->setComplexProperty("UK_OtherCourier24",1);
+//    
+//    getObject()->setComplexProperty("shippingService");
+//    getObject()->setComplexProperty("1");
+//    getObject()->setComplexProperty("shippingServiceAdditionalCost");
+//    getObject()->setComplexProperty("cost");
+//    getObject()->setComplexProperty("0.00",1);
+    
+//    getObject()->setProperty("siteId", "3");
     //getObject()->setProperty("count", "20");
 //    getObject()->setProperty("q", "TheTastingHouse");
     
     // Note
    //     getObject()->setProperty("guid", "c0e39e3a-a6e8-4d3f-8a50-6653437a176b");
     
-    getObject()->setProperty("createTimeFrom", "2016-05-01T00:00:00Z");
-    getObject()->setProperty("createTimeTo", "2016-05-21T23:59:59Z");
+    //getObject()->setProperty("createTimeFrom", "2016-05-01T00:00:00Z");
+   // getObject()->setProperty("createTimeTo", "2016-05-21T23:59:59Z");
     // Note book
     
 //    getObject()->setProperty("guid", "9cd1ef2c-a694-444d-adea-10400f536be9");
