@@ -46,7 +46,7 @@ void LBJSONRenderFM::processObject(const Value& doc){
         printf("Current Level %d\n",currentLevel);
         
         bool intDone = false;
-        if(kTypeNames[itr->value.GetType()] == kTypeNames[3]){
+        if(kTypeNames[itr->value.GetType()] == kTypeNames[3]){ // Object
             if(useLBDebug){
                 printf("Type of member processObject Object %s is %s\n",itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             }
@@ -66,7 +66,7 @@ void LBJSONRenderFM::processObject(const Value& doc){
             currentLevel--;
             varString.pop_back();
             
-        }else if(kTypeNames[itr->value.GetType()] == kTypeNames[4]){
+        }else if(kTypeNames[itr->value.GetType()] == kTypeNames[4]){ // Array
             if(useLBDebug){
                 printf("Type of member processObject Array %s is %s\n",itr->name.GetString(), kTypeNames[itr->value.GetType()]);
             }
@@ -180,7 +180,7 @@ void LBJSONRenderFM::processObject(const Value& doc){
                 varString.pop_back();
             }
             
-        }else{
+        }else{ // is a value
             if(useLBDebug){
                 printf("Type of member processObject Value is %s", kTypeNames[itr->value.GetType()]);
             }

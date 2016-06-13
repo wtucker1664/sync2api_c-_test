@@ -54,13 +54,6 @@ namespace LB{
         string getVarString();
         void stepBack(SizeType p);
         void processObject(const Value& doc);
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /*
-         *
-         * 		Processing of JSON Root Document Arrays
-         *
-         */
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         void processArray(const Value& doc);
         
         void processValue(const Value& doc);

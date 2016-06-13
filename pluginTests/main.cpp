@@ -187,10 +187,10 @@ int main(int argc, const char * argv[]) {
 #include <string>
 #include <istream>
 #include <vector>
-#include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/foreach.hpp>
+//#include <boost/algorithm/string.hpp>
+//#include <boost/algorithm/string/split.hpp>
+//#include <boost/property_tree/ptree.hpp>
+//#include <boost/foreach.hpp>
 #include "LBJSONRenderFM.h"
 #include <cstdio>
 #include <map>
@@ -211,40 +211,40 @@ using namespace rapidjson;
 using namespace LB;
 Document document;	// Default template parameter uses UTF8 and MemoryPoolAllocator.
 LBJSONRenderFM *jObject;
-static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
-{
-    ((std::string*)userp)->append((char*)contents, size * nmemb);
-    return size * nmemb;
-}
+//static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+//{
+//    ((std::string*)userp)->append((char*)contents, size * nmemb);
+//    return size * nmemb;
+//}
 
-std::string createHTTPVarsString(std::string pNames){
-    std::stringstream postValues;
-    vector<string> strsig;
-    boost::split(strsig,pNames,boost::is_any_of(","));
-    
-    if(strsig.size() > 1){
-        
-        for(size_t m = 0; m < strsig.size(); m++){
-            vector<string> strsig1;
-            cout << strsig[m].c_str() << "\n";
-            boost::split(strsig1,strsig[m],boost::is_any_of(":,::,|,||,[]"));
-            
-            if(strsig1.size() == 2){
-                
-                
-                postValues << "&" << strsig1[0].c_str() << "=" << strsig1[1].c_str();
-                
-            }
-        }
-        
-    }
-    
-    return postValues.str();
-}
-
-void test(){
-    
-}
+//std::string createHTTPVarsString(std::string pNames){
+//    std::stringstream postValues;
+//    vector<string> strsig;
+//    boost::split(strsig,pNames,boost::is_any_of(","));
+//    
+//    if(strsig.size() > 1){
+//        
+//        for(size_t m = 0; m < strsig.size(); m++){
+//            vector<string> strsig1;
+//            cout << strsig[m].c_str() << "\n";
+//            boost::split(strsig1,strsig[m],boost::is_any_of(":,::,|,||,[]"));
+//            
+//            if(strsig1.size() == 2){
+//                
+//                
+//                postValues << "&" << strsig1[0].c_str() << "=" << strsig1[1].c_str();
+//                
+//            }
+//        }
+//        
+//    }
+//    
+//    return postValues.str();
+//}
+//
+//void test(){
+//    
+//}
 
 LBJSONRenderFM* getObject(){
     
