@@ -1009,7 +1009,7 @@ string LBJSONRenderFM::getRequestUrl(){
     if(!useDebug){
         return "https://www.sync2api.com/consumer/";
     }else{
-        return "https://sync2api.linearblue.net/consumer";
+        return "https://sync2api.linearblue.net/sync2api/website/consumer";
     }
 }
 
