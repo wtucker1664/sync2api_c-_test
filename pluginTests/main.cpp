@@ -347,29 +347,43 @@ int main( int argc, char ** argv ) {
     
     
      //   getObject()->setLicenceKeys("0b85a3eddf74b32d5b824311537aa4c51e39dff8","28cf64e0fc8f5598e51b3585f4769594b87c7f2c");
-    getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf"); // warrens test account
-    getObject()->clearRequest();
+   // getObject()->setLicenceKeys("fda44bb00f601a49b9ab4e0ef38e48fa08c3c4a1","c7be2af49a804edc0eafbf7a0792421e0604cbcf"); // warrens test account
+   
+    getObject()->setLicenceKeys("ce340b2621f2fbad4b8c119d6b295237f7bf7278","ff1f1acfbaea603dd0b19eeec818872bfe198a4d");
     
-    
-    //getObject()->setLicenceKeys("070a13d979221d85bae59f4b41d1444d00147b9e","87d4801e9eaaf96f7663650de440472d8dca5c91"); // Live account petrol scooter be careful
-//    
+   // getObject()->setLicenceKeys("070a13d979221d85bae59f4b41d1444d00147b9e","87d4801e9eaaf96f7663650de440472d8dca5c91"); // Live account petrol scooter be careful
+//
+     getObject()->clearRequest();
        getObject()->setLBDebug(true);
-    getObject()->setDebug(true);
+    //getObject()->setDebug(true);
         getObject()->setProperty("outputType", "json");
 /* Twitter */
-    getObject()->setModule("twitter");
-    getObject()->setMethod("userTweets");
+//    getObject()->setModule("twitter");
+//    getObject()->setMethod("UserTweets");
 
 /* Ebay */
-//    getObject()->setModule("ebay");
-//    getObject()->setMethod("AddFixedPriceItem");
+     getObject()->setModule("appointmentPlus");
+//    getObject()->setMethod("Orders");
+    
+     getObject()->setMethod("Customers");
 //    
 //    getObject()->setComplexProperty("BuyerRequirmentDetails");
 //    getObject()->setComplexProperty("ShipToRegistrationCountry");
 //    getObject()->setComplexProperty("true",1);
 //    
-//    getObject()->setProperty("SKU", "10067");
+//    getObject()->setProperty("numberOfDays", "4");
+    
+//    getObject()->setProperty("createTimeFrom", "2016-08-25T00:00:00.000Z");
 //    
+//    getObject()->setProperty("createTimeTo", "2016-08-25T23:59:59.000Z");
+    
+    
+    //getObject()->setProperty("siteId", "3");
+    
+    getObject()->setProperty("updated", "201609281200");
+    
+   // getObject()->setProperty("customer", "229516");
+//
 //    getObject()->setProperty("buyItNowPrice", "5.49");
 //    
 //    getObject()->setProperty("conditionID", "1000" );
